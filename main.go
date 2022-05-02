@@ -1,56 +1,68 @@
 package main
 
 import (
+	"context"
 	"flag"
-	// "fmt"
+	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	// "time"
 	// "github.com/icrowley/fake"
 	// "math/rand"
-	"time"
-    "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
-type Player struct {
-	Id   uint
-	Name string `bson:"name"`
-}
-
-type Match struct {
-	HomeTeam  string    `bson:"home_team"`
-	AwayTeam  string    `bson:"away_team"`
-	HomeScore int       `bson:"home_score"`
-	AwayScore int       `bson:"away_score"`
-	Decided   bool      `bson:"decided"`
-	MatchDate time.Time `bson:"match_date"`
-}
-
-type PlayerMatch struct {
-	Id       uint
-	PlayerId uint `bson:"player_id"`
-	MatchId  uint `bson:"match_id"`
-}
-
 func main() {
-    // env
-    godotenv.Load(".env")
-
-    // db
-	client := NewMongoConnection()
-    defer DisconnectDb(client)
-
-    // cmd flags
-	generateFlag := flag.Bool("g", false, "generate data")
-    flag.Parse()
-
-	if *generateFlag {
-		GenerateData(client)
+	// env
+	// fix calling this piece of shit
+	ctx := context.Background()
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(err)
 	}
 
-	// ticker := time.NewTicker(time.Second * 1)
-	// go func() {
-	//     for {
-	//         select {
-	//         case <-ticker.C:
-	//         }
-	//     }
-	// }()
+	// db
+	db := GetDb()
+	defer DisconnectDb(db.Client())
+
+	// cmd flags
+	generate := flag.Bool("g", false, "generate data")
+	action := flag.String("a", "", "action function")
+	actionParams := flag.String("params", "{}", "action parameters")
+	flag.Parse()
+
+	if *generate {
+		GenerateData(db)
+	}
+
+	switch *action {
+	case "list_players":
+		playersColl := db.Collection("players")
+		opts := options.Find().SetSort(bson.D{{"points", -1}})
+		playersCur, err := playersColl.Find(ctx, bson.D{}, opts)
+		if err != nil {
+			panic(err)
+		}
+
+		var players []Player
+		playersCur.All(ctx, &players)
+		PrintPlayers(players)
+	case "place_bet":
+		fmt.Println("place_beet")
+		fmt.Printf("actionParams: %s", *actionParams)
+	case "matches":
+		matchesColl := db.Collection("matches")
+		matchesCur, err := matchesColl.Find(ctx, bson.D{{}})
+		if err != nil {
+			panic(err)
+		}
+
+		for matchesCur.Next(ctx) {
+			var match Match
+			matchesCur.Decode(&match)
+			match.PrintDetails()
+		}
+	case "run":
+		Update(db)
+	}
 }
