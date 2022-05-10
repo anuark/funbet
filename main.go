@@ -4,12 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	// "time"
-	// "github.com/icrowley/fake"
-	// "math/rand"
-	"github.com/joho/godotenv"
+	"os"
+	"time"
 )
 
 func main() {
@@ -27,15 +26,14 @@ func main() {
 
 	// cmd flags
 	generate := flag.Bool("g", false, "generate data")
-	action := flag.String("a", "", "action function")
-	actionParams := flag.String("params", "{}", "action parameters")
+	action := os.Args[1]
 	flag.Parse()
 
 	if *generate {
 		GenerateData(db)
 	}
 
-	switch *action {
+	switch action {
 	case "list_players":
 		playersColl := db.Collection("players")
 		opts := options.Find().SetSort(bson.D{{"points", -1}})
@@ -46,10 +44,17 @@ func main() {
 
 		var players []Player
 		playersCur.All(ctx, &players)
-		PrintPlayers(players)
+		PrintPlayers(players, os.Stdout)
 	case "place_bet":
-		fmt.Println("place_beet")
-		fmt.Printf("actionParams: %s", *actionParams)
+        // example: ./funbet {playerId} {matchId} true
+		fmt.Println("place_bet")
+		playerId := os.Args[2]
+		matchId := os.Args[3]
+		isHomeVote := os.Args[4]
+		err := PlaceBet(db, playerId, matchId, isHomeVote)
+		if err != nil {
+			panic(err)
+		}
 	case "matches":
 		matchesColl := db.Collection("matches")
 		matchesCur, err := matchesColl.Find(ctx, bson.D{{}})
@@ -60,9 +65,11 @@ func main() {
 		for matchesCur.Next(ctx) {
 			var match Match
 			matchesCur.Decode(&match)
-			match.PrintDetails()
+			match.PrintDetails(os.Stdout)
 		}
 	case "run":
-		Update(db)
+		Update(db, time.Second*1)
+    case "serve":
+        HttpServe(db)
 	}
 }

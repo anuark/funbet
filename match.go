@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"os"
+    "io"
 	"text/tabwriter"
 	"time"
 )
@@ -34,24 +34,24 @@ func (m Match) GetAll(db *mongo.Database) []Match {
 	return results
 }
 
-func PrintAllMatches(matches []Match) {
+func PrintAllMatches(w io.Writer, matches []Match) {
 	padding := 3
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.FilterHTML)
-	fmt.Fprintln(w, "Home\tScore\tAway")
-    fmt.Fprintln(w, "\t\t")
+	tabW := tabwriter.NewWriter(w, 0, 0, padding, ' ', tabwriter.FilterHTML)
+	fmt.Fprintln(tabW, "Home\tScore\tAway")
+    fmt.Fprintln(tabW, "\t\t")
 	for _, match := range matches {
-		fmt.Fprintf(w, "%s\t%d - %d\t%s\n", match.HomeTeam, match.HomeScore, match.AwayScore, match.AwayTeam)
+		fmt.Fprintf(tabW, "%s\t%d - %d\t%s\n", match.HomeTeam, match.HomeScore, match.AwayScore, match.AwayTeam)
 	}
-	w.Flush()
+	tabW.Flush()
 }
 
-func (m Match) PrintDetails() {
+func (m Match) PrintDetails(w io.Writer) {
 	padding := 3
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.FilterHTML)
-    fmt.Fprintf(w, "Match Date: %s\n", m.MatchDate.Format(time.RFC822))
-    fmt.Fprintf(w, "Decided: %s\n", If(m.Decided, "Yes", "No"))
-	fmt.Fprintln(w, "Home\tScore\tAway")
-	fmt.Fprintf(w, "%s\t%d - %d\t%s\n", m.HomeTeam, m.HomeScore, m.AwayScore, m.AwayTeam)
-    fmt.Fprintln(w, "\t\t")
-	w.Flush()
+	tabW := tabwriter.NewWriter(w, 0, 0, padding, ' ', tabwriter.FilterHTML)
+    fmt.Fprintf(tabW, "Match Date: %s\n", m.MatchDate.Format(time.RFC822))
+    fmt.Fprintf(tabW, "Decided: %s\n", If(m.Decided, "Yes", "No"))
+	fmt.Fprintln(tabW, "Home\tScore\tAway")
+	fmt.Fprintf(tabW, "%s\t%d - %d\t%s\n", m.HomeTeam, m.HomeScore, m.AwayScore, m.AwayTeam)
+    fmt.Fprintln(tabW, "\t\t")
+	tabW.Flush()
 }

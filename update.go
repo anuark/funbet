@@ -10,10 +10,10 @@ import (
 	// "math/rand"
 )
 
-func Update(db *mongo.Database) {
+func Update(db *mongo.Database, frequency time.Duration) {
     ctx := context.Background()
 	done := make(chan bool)
-	ticker := time.NewTicker(time.Second * 2)
+	ticker := time.NewTicker(frequency)
 
 	for {
 		select {
