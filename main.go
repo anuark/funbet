@@ -70,6 +70,6 @@ func main() {
 	case "run":
 		Update(db, time.Second*1)
     case "serve":
-        HttpServe(db)
+        HttpServe()
 	}
 }
