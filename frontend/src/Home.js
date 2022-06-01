@@ -3,10 +3,11 @@ import { matchesList } from './restApi.js';
 import './Home.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { isAuthenticated } from './App.js';
+import { useApp } from './providers/AppProvider.jsx';
 
 const Home = () => {
     const [matches, setMatches] = useState([]);
+    const { isAuth } = useApp();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,7 +15,7 @@ const Home = () => {
     }, [])
 
     const vote = (type, id) => {
-        if (!isAuthenticated()) {
+        if (!isAuth) {
             navigate('/auth');
         }
 

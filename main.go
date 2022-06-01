@@ -25,15 +25,13 @@ func main() {
 	defer DisconnectDb(db.Client())
 
 	// cmd flags
-	generate := flag.Bool("g", false, "generate data")
-	action := os.Args[1]
+	action := flag.String("a", "", "Action to perform")
 	flag.Parse()
 
-	if *generate {
-		GenerateData(db)
-	}
 
-	switch action {
+	switch *action {
+	case "generate":
+		GenerateData(db)
 	case "list_players":
 		playersColl := db.Collection("players")
 		opts := options.Find().SetSort(bson.D{{"points", -1}})
@@ -67,7 +65,7 @@ func main() {
 			matchesCur.Decode(&match)
 			match.PrintDetails(os.Stdout)
 		}
-	case "run":
+	case "update":
 		Update(db, time.Second*1)
     case "serve":
         HttpServe()

@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"io"
 	"text/tabwriter"
 )
 
 type Player struct {
-	Id     uint   `bson:"id" json:"id"`
-	Name   string `bson:"name" json:"name"`
-	Points uint   `bson:"points" json:"points"`
+	Id     primitive.ObjectID `bson:"_id" json:"id"`
+	Name   string             `bson:"name" json:"name"`
+	Points uint               `bson:"points" json:"points"`
 }
 
 func (p Player) GetAll(db *mongo.Database) []Player {

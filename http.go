@@ -13,7 +13,7 @@ func hello(w http.ResponseWriter, _ *http.Request) {
 }
 
 func timeoutHandler(h http.Handler) http.Handler {
-	return http.TimeoutHandler(h, 1*time.Second, "timed out")
+	return http.TimeoutHandler(h, 30*time.Second, "timed out")
 }
 
 func HttpServe() {

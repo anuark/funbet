@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"io"
 	"text/tabwriter"
@@ -11,15 +12,15 @@ import (
 )
 
 type Match struct {
-	Id            uint      `bson:"id" json:"id"`
-	HomeTeam      string    `bson:"home_team" json:"home_team"`
-	AwayTeam      string    `bson:"away_team" json:"away_team"`
-	HomeScore     int       `bson:"home_score" json:"home_score"`
-	AwayScore     int       `bson:"away_score" json:"away_score"`
-	Decided       bool      `bson:"decided" json:"decided"`
-	MatchDate     time.Time `bson:"match_date" json:"match_date"`
-	HomePlayerIds []int     `bson:"home_player_ids" json:"home_player_ids"`
-	AwayPlayerIds []int     `bson:"away_player_ids" json:"away_player_ids"`
+	Id            primitive.ObjectID `bson:"_id" json:"_id"`
+	HomeTeam      string             `bson:"home_team" json:"home_team"`
+	AwayTeam      string             `bson:"away_team" json:"away_team"`
+	HomeScore     int                `bson:"home_score" json:"home_score"`
+	AwayScore     int                `bson:"away_score" json:"away_score"`
+	Decided       bool               `bson:"decided" json:"decided"`
+	MatchDate     time.Time          `bson:"match_date" json:"match_date"`
+	HomePlayerIds []int              `bson:"home_player_ids" json:"home_player_ids"`
+	AwayPlayerIds []int              `bson:"away_player_ids" json:"away_player_ids"`
 }
 
 func (m Match) GetAll(db *mongo.Database) []Match {

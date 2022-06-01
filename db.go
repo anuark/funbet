@@ -15,6 +15,7 @@ import (
 
 func GetDb() *mongo.Database {
 	// Create a new client and connect to the server
+	fmt.Println(os.Getenv("MONGO_URL"))
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_URL")))
 	if err != nil {
 		panic(err)
@@ -42,7 +43,6 @@ func GenerateData(db *mongo.Database) {
 	playersColl.DeleteMany(context.TODO(), filter)
 	for i := 0; i < 10; i++ {
 		player := Player{
-			Id:     uint(i),
 			Name:   fake.FirstName(),
 			Points: 0,
 		}
@@ -62,7 +62,6 @@ func GenerateData(db *mongo.Database) {
 		// nextWeek := time.Duration(int(time.Hour) * 24 * 7 * i)
 		nextWeek := time.Duration(int(time.Minute) * 1 * i)
 		match := Match{
-			Id:            uint(i),
 			HomeTeam:      fake.Brand(),
 			AwayTeam:      fake.Brand(),
 			HomeScore:     rand.Intn(5),
