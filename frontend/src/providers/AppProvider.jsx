@@ -12,9 +12,9 @@ const useApp = () => {
 }
 
 const AppProvider = ({ children }) => {
-    const [isAuth, setIsAuth] = useState(false);
-
-    const contextValue = { isAuth, setIsAuth };
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+    const [alert, setAlert] = useState(null);
+    const contextValue = { user, setUser, alert, setAlert };
     return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 }
 

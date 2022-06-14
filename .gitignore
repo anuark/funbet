@@ -15,7 +15,8 @@
 # vendor/
 .env
 
-src/node_modules
+node_modules
+frontend/node_modules
 
 # Local Netlify folder
 .netlify
