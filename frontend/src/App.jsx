@@ -1,6 +1,6 @@
 import './App.css';
-import Header from './Header.js';
-import Home from './Home.js';
+import Header from './Header';
+import Home from './Home';
 import Auth from './Auth';
 import Alert from './Alert';
 import AuthDiscord from './AuthDiscord';

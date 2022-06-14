@@ -23,13 +23,14 @@ const generateData = async (): Promise<void> => {
     for (let i = 0; i < 10; i++) {
         const homeScore = Math.floor(Math.random() * 5);
         const awayScore = Math.floor(Math.random() * 5);
+        const day = dayjs().add(1 * i, 'hour');
         
         await matchesCol.insertOne({
             homeTeam: faker.company.companyName(),
             awayTeam: faker.company.companyName(),
             homeScore: homeScore,
             awayScore: awayScore,
-            matchDate: dayjs().add(1 * i, 'hour')['$d'],
+            matchDate: day.toDate(),
             decided: false,
             homePlayersIds: [],
             awayPlayersIds: [],
@@ -37,26 +38,27 @@ const generateData = async (): Promise<void> => {
         });
     }
 
-    const matches = await matchesCol.find().toArray();
-    let players = await playersCol.find().toArray();
-    for (let i=0; i<10; i++) {
-        const match = matches[i];
-        players = shuffle(players);
-        for (let j=0; j<players.length; j++) {
-            const player = players[j];
-            if (j%2 == 0) {
-                await matchesCol.updateOne(
-                    { _id: new ObjectId(match._id) },
-                    { $push: { homePlayersIds: new ObjectId(player._id) } },
-                );
-            } else {
-                await matchesCol.updateOne(
-                    { _id: new ObjectId(match._id) },
-                    { $push: { awayPlayersIds: new ObjectId(player._id) } },
-                );
-            }
-        }
-    }
+    // randomize votes
+    // const matches = await matchesCol.find().toArray();
+    // let players = await playersCol.find().toArray();
+    // for (let i=0; i<10; i++) {
+    //     const match = matches[i];
+    //     players = shuffle(players);
+    //     for (let j=0; j<players.length; j++) {
+    //         const player = players[j];
+    //         if (j%2 == 0) {
+    //             await matchesCol.updateOne(
+    //                 { _id: new ObjectId(match._id) },
+    //                 { $push: { homePlayersIds: new ObjectId(player._id) } },
+    //             );
+    //         } else {
+    //             await matchesCol.updateOne(
+    //                 { _id: new ObjectId(match._id) },
+    //                 { $push: { awayPlayersIds: new ObjectId(player._id) } },
+    //             );
+    //         }
+    //     }
+    // }
 
     console.log('success');
 }

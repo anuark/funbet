@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { matchesList, castVote } from './restApi.js';
 import './Home.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
@@ -16,57 +16,57 @@ const Home = () => {
         });
     }, [])
 
-    const vote = (type, id) => {
+    const vote = (type, matchId) => {
         if (!user) {
             setAlert({ variant: 'info', text: 'You need to login first' });
             navigate('/auth');
+            return;
         }
 
-        const matchId = 223; // TODO: get actual match Id
         if (type === 'home') {
-            document.getElementById(id + '-home')
+            document.getElementById(matchId + '-home')
                 .className = 'btn btn-primary';
-            document.getElementById(id + '-draw')
+            document.getElementById(matchId + '-draw')
                 .className = 'btn btn-secondary';
-            document.getElementById(id + '-away')
+            document.getElementById(matchId + '-away')
                 .className = 'btn btn-secondary';
 
             castVote(user, matchId, 'home');
         } else if (type === 'draw') {
-            document.getElementById(id + '-home')
+            document.getElementById(matchId + '-home')
                 .className = 'btn btn-secondary';
-            document.getElementById(id + '-draw')
+            document.getElementById(matchId + '-draw')
                 .className = 'btn btn-primary';
-            document.getElementById(id + '-away')
+            document.getElementById(matchId + '-away')
                 .className = 'btn btn-secondary';
 
-            castVote(user, matchId, 'home');
+            castVote(user, matchId, 'draw');
         } else if (type === 'away') {
-            document.getElementById(id + '-home')
+            document.getElementById(matchId + '-home')
                 .className = 'btn btn-secondary';
-            document.getElementById(id + '-draw')
+            document.getElementById(matchId + '-draw')
                 .className = 'btn btn-secondary';
-            document.getElementById(id + '-away')
+            document.getElementById(matchId + '-away')
                 .className = 'btn btn-primary';
 
-            castVote(user, matchId, 'home');
+            castVote(user, matchId, 'away');
         }
     }
 
     return (
         <div>
             {matches && matches.map((m) =>
-                <Container key={m._id} className="mb-5">
+                <Container key={m._id} className="mb-5" data-id={m._id}>
                     <Row className="p-3">
-                        <Col>{m.home_team}</Col>
-                        <Col>{m.home_score}:{m.away_score}</Col>
-                        <Col>{m.away_team}</Col>
+                        <Col>{m.homeTeam}</Col>
+                        <Col>{m.homeScore}:{m.awayScore}</Col>
+                        <Col>{m.awayTeam}</Col>
                     </Row>
                     <Row><Col></Col><Col>Vote for:</Col><Col></Col></Row>
                     <Row>
-                        <Col><Button id={m.id + '-home'} onClick={() => vote('home', m.id)} variant="secondary">Home</Button></Col>
-                        <Col><Button id={m.id + '-draw'} onClick={() => vote('draw', m.id)} variant="secondary">Draw</Button></Col>
-                        <Col><Button id={m.id + '-away'} onClick={() => vote('away', m.id)} variant="secondary">Away</Button></Col>
+                        <Col><Button id={m._id + '-home'} onClick={() => vote('home', m._id)} variant="secondary">Home</Button></Col>
+                        <Col><Button id={m._id + '-draw'} onClick={() => vote('draw', m._id)} variant="secondary">Draw</Button></Col>
+                        <Col><Button id={m._id + '-away'} onClick={() => vote('away', m._id)} variant="secondary">Away</Button></Col>
                     </Row>
                 </Container>
             )}

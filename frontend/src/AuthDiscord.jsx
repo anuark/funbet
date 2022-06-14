@@ -27,7 +27,7 @@ const AuthDiscord = () => {
                 console.log({ discordUser });
 
                 const { username, id, avatar } = discordUser;
-                const avatarUrl = `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=256`
+                const avatarUrl = `https://cdn.discordapp.com/avatars/${id}/${avatar}.png?size=48`
                 const user = { accessToken: access_token, tokenType: token_type, refreshToken: refresh_token, username, id, avatarUrl }
                 localStorage.setItem('user', JSON.stringify(user));
                 setUser(user);

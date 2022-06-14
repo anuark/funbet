@@ -69,11 +69,12 @@ export const handler: Handler = async (event, _) => {
 
         if (post.type === Type.Home) {
             // TODO: prevent pushing duplicate player ids
-            matches.updateOne({ _id: new ObjectId(post.matchId) }, { $push: { homePlayerIds: player._id } });
+            console.log({ player });
+            matches.updateOne({ _id: new ObjectId(post.matchId) }, { $push: { homePlayersIds: player._id } });
         } else if (post.type === Type.Away) {
-            matches.updateOne({ _id: new ObjectId(post.matchId) }, { $push: { awayPlayerIds: player._id } });
+            matches.updateOne({ _id: new ObjectId(post.matchId) }, { $push: { awayPlayersIds: player._id } });
         } else if (post.type === Type.Draw) {
-            matches.updateOne({ _id: new ObjectId(post.matchId) }, { $push: { drawPlayerIds: player._id } });
+            matches.updateOne({ _id: new ObjectId(post.matchId) }, { $push: { drawPlayersIds: player._id } });
         } else {
             return {
                 statusCode: 400,
