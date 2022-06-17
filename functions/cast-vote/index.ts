@@ -1,17 +1,25 @@
 import { Handler } from '@netlify/functions'
-import newConnection from '../db';
-import { parseAuthorization } from '../util';
 import { Db, ObjectId } from 'mongodb';
+import { newConnection } from '../../utils/db';
+import { parseAuthorization } from '../../utils/util';
 
-const rest = async (url: string, data: any): Promise<any> => {
-    return fetch(url, data).then(r => r.json());
-}
+export interface Player {
+    _id: ObjectId,
+    accessToken: string,
+    refreshToken: string,
+    discordId: string,
+    avatarUrl: string,
+    username: string,
+    lastActiveDate: Date,
+};
+
 
 enum Type { 
     Home = 'home', 
     Away = 'away', 
     Draw = 'draw' 
 };
+
 interface CastVoteRequest {
     type: Type,
     matchId: string,

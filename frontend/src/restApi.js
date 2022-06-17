@@ -4,7 +4,7 @@ const matchesList = async (authUser) => {
         auth = window.btoa(JSON.stringify(authUser));
     }
 
-    return fetch(process.env.REACT_APP_API_URL + '/list-matches', {
+    return fetch(process.env.REACT_APP_API_URL + '/game-list', {
         headers: { 'Authorization': 'Bearer ' + auth }
     }).then(r => r.json());
 };
@@ -22,4 +22,16 @@ const castVote = async (authUser, matchId, type) => {
     }).then(r => r.json());
 };
 
-export { matchesList, castVote }
+const playersList = async (authUser) => {
+    let auth = '';
+    if (authUser) {
+        auth = window.btoa(JSON.stringify(authUser));
+    }
+
+    return fetch(process.env.REACT_APP_API_URL + '/player-list', {
+        method: 'get',
+        headers: { 'Authorization': 'Bearer ' + auth },
+    }).then(r => r.json());
+};
+
+export { matchesList, castVote, playersList }

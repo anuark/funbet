@@ -12,7 +12,7 @@ const Home = () => {
 
     useEffect(() => {
         matchesList(user).then(res => {
-            setMatches(res.matches)
+            setMatches(res)
         });
     }, [])
 

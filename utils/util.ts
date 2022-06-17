@@ -1,18 +1,6 @@
 import { Player } from './models';
 import { Db } from 'mongodb';
 
-/**
- * Shuffles array in place. ES6 version
- * @param {Array} a items An array containing the items.
- */
-export const shuffle = (a: any[]): any[] => {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-
-    return a;
-}
 
 export const parseAuthorization = async(authorization: string, db: Db): Promise<[boolean, Player]> => {
     let player: Player;
@@ -41,6 +29,7 @@ export const parseAuthorization = async(authorization: string, db: Db): Promise<
         discordId: decoded.id,
         username: decoded.username,
         lastActiveDate: new Date(),
+        score: 0
     }
 
     if (playerModel) {
@@ -50,7 +39,10 @@ export const parseAuthorization = async(authorization: string, db: Db): Promise<
         player._id = record.insertdId;
     }
 
-
     return [false, player];
 }
+
+export const delay = (time: number): Promise<void> => new Promise((resolve) => {
+    setTimeout(resolve, time);
+});
 

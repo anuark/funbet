@@ -1,36 +1,31 @@
-import { schedule } from '@netlify/functions';
-import puppeteer from 'puppeteer';
-import dayjs from 'dayjs';
-import chromium from 'chrome-aws-lambda';
+const puppeteer = require('puppeteer');
+const dayjs = require('dayjs');
 
-var parseDate = (date: string) => {
+const delay = (time) => new Promise((resolve) => {
+    setTimeout(resolve, time);
+});
+
+var parseDate = (date) => {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     let [, d, m] = date.split(' ');
+    console.log({ date, d, m });
 
     const day = d.replace(/[a-z]/g, '');
     const year = '2022';
     const month = months.indexOf(m) + 1
-
     return dayjs(`${year}-${month}-${day}`);
 };
-
-const harvestData = (async () => {
-    const browser = await puppeteer.launch({
+(async () => { const browser = await puppeteer.launch({
         // devtools: true,
         // defaultViewport: { 'width': 2200, 'height': 1200 },
         // headless: false,
-        //     '--no-sandbox',
-        //     '--disable-setuid-sandbox',
-        //     '--disable-dev-shm-usage',
-        //     // '--start-fullscreen'
-        // ],
-        // ignoreDefaultArgs: ['--disable-extensions'],
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath,
-        // executablePath: '/opt/homebrew/bin/chromium',
-        headless: chromium.headless,
-        ignoreHTTPSErrors: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            // '--start-fullscreen'
+        ],
+        ignoreDefaultArgs: ['--disable-extensions'],
     });
 
     const page = await browser.newPage();
@@ -58,11 +53,11 @@ const harvestData = (async () => {
     data.forEach((v, i) => {
         // is match
         if (v.substring(0, 1) == '\t') {
-            let date: dayjs.Dayjs;
+            let date;
             // find date
             let j = 1;
-            while (true) {
-                let d = data[i - (j++)];
+            while(true) {
+                let d = data[i-(j++)];
                 if (d.substring(0, 1) != '\t') {
                     date = parseDate(d);
                     break;
@@ -73,24 +68,11 @@ const harvestData = (async () => {
             let time = timeUnformatted.replace('\n', '');
             let hour = time.substring(0, 2);
             let mins = parseInt(time.substring(3, 5));
-            date = date.set('hour', hour).set('minute', mins);
-            games.push({ date: date.toDate(), homeTeam, awayTeam, homeScore: 0, awayScore: 0, status: 'not-played' });
+            date.set('hour', hour).set('minute', mins);
+            date = date.toDate();
+            games.push({ date, homeTeam, awayTeam, homeScore: 0, awayScore: 0, status: 'not-played' });
         }
     });
 
-    console.log({ games });
-});
-
-// To learn about scheduled functions and supported cron extensions, 
-// see: https://ntl.fyi/sched-func
-export const handler = schedule("@hourly", async (event, _) => {
-    const eventBody = JSON.parse(event.body);
-    console.log(`Next function run at ${eventBody.next_run}.`);
-
-    await harvestData();
-
-    return {
-        statusCode: 200
-    };
-});
-
+    console.log(games);
+})();

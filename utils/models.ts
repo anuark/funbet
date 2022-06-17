@@ -8,6 +8,7 @@ export interface Player {
     avatarUrl: string,
     username: string,
     lastActiveDate: Date,
+    score: number,
 };
 
 export interface Match {
