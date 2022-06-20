@@ -87,7 +87,7 @@
 #   must-revalidate'''
 
 [functions]
-  external_node_modules = ["chrome-aws-lambda"]
+  external_node_modules = ["chrome-aws-lambda", "mongodb"]
   node_bundler = "esbuild"
   # Directory with serverless functions, including background 
   # functions, to deploy. This is relative to the base directory

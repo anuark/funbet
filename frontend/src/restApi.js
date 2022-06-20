@@ -1,10 +1,12 @@
+const baseUrl = process.env.REACT_APP_API_URL + '/.netlify/functions';
+
 const matchesList = async (authUser) => {
     let auth = '';
     if (authUser) {
         auth = window.btoa(JSON.stringify(authUser));
     }
 
-    return fetch(process.env.REACT_APP_API_URL + '/game-list', {
+    return fetch(baseUrl + '/game-list', {
         headers: { 'Authorization': 'Bearer ' + auth }
     }).then(r => r.json());
 };
@@ -15,7 +17,7 @@ const castVote = async (authUser, matchId, type) => {
         auth = window.btoa(JSON.stringify(authUser));
     }
 
-    return fetch(process.env.REACT_APP_API_URL + '/cast-vote', {
+    return fetch(baseUrl + '/cast-vote', {
         method: 'post',
         headers: { 'Authorization': 'Bearer ' + auth },
         body: JSON.stringify({ matchId, type })
@@ -28,7 +30,7 @@ const playersList = async (authUser) => {
         auth = window.btoa(JSON.stringify(authUser));
     }
 
-    return fetch(process.env.REACT_APP_API_URL + '/player-list', {
+    return fetch(baseUrl + '/player-list', {
         method: 'get',
         headers: { 'Authorization': 'Bearer ' + auth },
     }).then(r => r.json());

@@ -13,20 +13,22 @@ import './App.css';
 // TODO: Add teams images
 // TODO: Divide games by month?
 
+console.log({ aa: process.env.REACT_APP_API_URL });
+
 function App() {
-  return (
-    <div className="App">
-      <Header/>
-      <Alert />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Home />} />
-        <Route path="/players" element={<Players />} />
-        <Route path="auth" element={<Auth />} />
-        <Route path="auth/discord" element={<AuthDiscord />} />
-      </Routes>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Header />
+            <Alert />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/dashboard" element={<Home />} />
+                <Route path="/players" element={<Players />} />
+                <Route path="auth" element={<Auth />} />
+                <Route path="auth/discord" element={<AuthDiscord />} />
+            </Routes>
+        </div>
+    );
 }
 
 export default App;
